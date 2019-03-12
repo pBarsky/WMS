@@ -1,20 +1,15 @@
 #include <stdio.h>
-#include "sqlite3.h"
 #include <stdlib.h>
-static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
-	int i;
-	for (i = 0; i < argc; i++) {
-		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-	}
-	printf("\n");
-	return 0;
-}
+#include "conversions.h"
+#include "sqlite3.h"
+#include "sql_manager.h"
+
+
 
 int main(int argc, char* argv[]) {
 	sqlite3 *db;
 	char *zErrMsg = 0;
 	int rc;
-	const char *sql;
 
 	/* Open database */
 	rc = sqlite3_open("test.db", &db);
@@ -27,11 +22,6 @@ int main(int argc, char* argv[]) {
 		fprintf(stdout, "Opened database successfully\n");
 	}
 
-	sql = "SELECT * FROM COMPANY;";
-
-	/* Execute SQL statement */
-	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-
 	if (rc != SQLITE_OK) {
 		fprintf(stdout, "SQL error: %s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
@@ -39,7 +29,8 @@ int main(int argc, char* argv[]) {
 	else {
 		fprintf(stdout, "Table created successfully\n");
 	}
+	sql_init(db);
 	sqlite3_close(db);
-	getchar();
+	system("pause");
 	return 0;
 }
