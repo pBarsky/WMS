@@ -1,18 +1,18 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "conversions.h"
 #include "sqlite3.h"
 #include "sql_manager.h"
+#include "client.h"
 
 
 
 int main(int argc, char* argv[]) {
-	sqlite3 *db;
-	char *zErrMsg = 0;
-	int rc;
+	//sqlite3 *db;
+	Client *cl;
+	//char *zErrMsg = 0;
+	//int rc;
 
 	/* Open database */
-	rc = sqlite3_open("test.db", &db);
+	/*rc = sqlite3_open("test.db", &db);
 
 	if (rc) {
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
@@ -30,7 +30,11 @@ int main(int argc, char* argv[]) {
 		fprintf(stdout, "Table created successfully\n");
 	}
 	sql_init(db);
-	sqlite3_close(db);
+	sqlite3_close(db);*/
+	cl = create_client(10);
+	printf("name: %s\n", cl->NAME);
+	printf("surname: %s\n", cl->SURNAME);
+	free_client(cl);
 	system("pause");
 	return 0;
 }
