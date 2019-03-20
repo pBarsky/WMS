@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="client.c" />
     <ClCompile Include="conversions.c" />
+    <ClCompile Include="items.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="sql_manager.c" />
@@ -124,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="client.h" />
     <ClInclude Include="conversions.h" />
+    <ClInclude Include="items.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="sql_manager.h" />
   </ItemGroup>

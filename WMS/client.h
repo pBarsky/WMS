@@ -1,9 +1,9 @@
 #pragma once
-#pragma warning(disable:4996)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include "conversions.h"
 #define BUFFER 128
 
 typedef struct client {

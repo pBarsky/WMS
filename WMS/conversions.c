@@ -1,4 +1,5 @@
 #include "conversions.h"
+
 int StringToInt(const char a[]) {
 	int c, sign = 0, offset, n;
 	if (a[0] == '-') {
@@ -18,4 +19,20 @@ int StringToInt(const char a[]) {
 		n = -n;
 	}
 	return n;
+}
+
+char* scanString(char *string)
+{
+	int c; //because getchar() -> int
+	int i = 0;
+	string = malloc(sizeof(char));
+	string[0] = '\0';
+	while((c = getchar()) != '\n' && c != EOF)
+	{
+		string = realloc(string, i + 2);
+		string[i] = (char)c;
+		string[i + 1] = '\0';
+		i++;
+	}
+	return string;
 }
