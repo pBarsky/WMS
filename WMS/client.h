@@ -4,7 +4,6 @@
 #include <string.h>
 #include <errno.h>
 #include "conversions.h"
-#define BUFFER 128
 
 typedef struct client {
 	int ID;
