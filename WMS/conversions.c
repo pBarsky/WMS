@@ -37,6 +37,6 @@ char* scanString(char *string)
 	return string;
 }
 
-int numberLength(int num) {
+int intLen(int num) {
 	return (int)floor(log10(abs(num))) + 1;
 }

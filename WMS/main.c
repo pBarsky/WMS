@@ -1,9 +1,5 @@
 #include "conversions.h"
-#include "sql_manager.h"
-#include "client.h"
-#include "items.h"
 #include "menu.h"
-#include <thread>
 int main(int argc, char* argv[]) {
 	sqlite3 *db;
 	Client *cl;
@@ -28,9 +24,10 @@ int main(int argc, char* argv[]) {
 	else {
 		fprintf(stdout, "Table created successfully\n");
 	}
-	drawMenu();
+	drawMenu(0);
 	sql_init(db);
-
+	//sqlite3_exec(db, "SELECT * FROM CLIENTS", default_callback, 0, &zErrMsg);
+	getChoice(db);
 	system("pause");;
 	return 0;
 }

@@ -1,12 +1,10 @@
 #pragma once
-#define BLUETEXT() SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 1)
-#define REDTEXT() SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 4)
-#define WHITETEXT() SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7)
+#define WHITEBACKGROUND() SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE)
 
 #include <Windows.h>
 #include <stdio.h>
-#include "client.h"
-#include "items.h"
+#include "sql_manager.h"
+#include <conio.h>
 
-void drawMenu();
-int getChoice();
+void drawMenu(int);
+int getChoice(sqlite3*);

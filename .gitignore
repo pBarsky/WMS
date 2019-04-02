@@ -14,3 +14,5 @@ wms\.txt
 WMS/x64/Release/
 
 x64/Release/
+
+*.db

@@ -6,5 +6,5 @@
 
 int StringToInt(const char[]);
 char* scanString(char*);
-int numberLength(int);
+int intLen(int);
 //char* build_sql_request(char* buffer );
