@@ -11,5 +11,5 @@ typedef struct client {
 	char *SURNAME;
 } Client;
 
-Client* create_client(int);
+Client* create_client();
 void free_client(Client*);

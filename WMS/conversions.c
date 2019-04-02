@@ -27,7 +27,7 @@ char* scanString(char *string)
 	int i = 0;
 	string = malloc(sizeof(char));
 	string[0] = '\0';
-	while((c = getchar()) != '\n' && c != EOF)
+	while ((c = getchar()) != '\n' && c != EOF)
 	{
 		string = realloc(string, i + 2);
 		string[i] = (char)c;
@@ -35,4 +35,8 @@ char* scanString(char *string)
 		i++;
 	}
 	return string;
+}
+
+int numberLength(int num) {
+	return (int)floor(log10(abs(num))) + 1;
 }
