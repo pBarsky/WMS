@@ -4,6 +4,8 @@
 #include "items.h"
 
 int default_callback(void*, int, char**, char**);
+int client_callback(void*, int, char**, char**);
+
 void sql_init(sqlite3*);
 void sql_addClient(sqlite3*, Client*);
 void sql_removeClient(sqlite3*, Client*);
@@ -11,6 +13,9 @@ void sql_updateClient(sqlite3*, Client*);
 void sql_showAllClients(sqlite3*);
 void sql_showClient(sqlite3*, Client*);
 
-void sql_addItem(sqlite3*, Item*);
+void sql_addItem(sqlite3*, Item*, Client*);
 void sql_removeItem(sqlite3*, Item*);
 void sql_updateItem(sqlite3*, Item*);
+void sql_showAllItems(sqlite3*);
+void sql_showAllItemsOfClient(sqlite3*, Client*);
+void sql_showItem(sqlite3*, Item*);

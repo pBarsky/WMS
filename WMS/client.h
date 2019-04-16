@@ -12,4 +12,5 @@ typedef struct client {
 } Client;
 
 Client* create_client();
+Client* create_client_fromDB();
 void free_client(Client*);

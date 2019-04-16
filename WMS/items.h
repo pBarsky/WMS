@@ -10,5 +10,5 @@ typedef struct item {
 	int CLIENT_ID;
 } Item;
 
-Item* create_item(int, Client*);
+Item* create_item(Client*);
 void free_item(Item* item);

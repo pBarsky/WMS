@@ -1,6 +1,6 @@
 #include "conversions.h"
 
-int StringToInt(const char a[]) {
+int stringToInt(const char a[]) {
 	int c, sign = 0, offset, n;
 	if (a[0] == '-') {
 		sign = -1;
@@ -21,11 +21,12 @@ int StringToInt(const char a[]) {
 	return n;
 }
 
-char* scanString(char *string)
+char* scanString()
 {
+	
 	int c; //because getchar() -> int
 	int i = 0;
-	string = malloc(sizeof(char));
+	char* string = malloc(sizeof(char));
 	string[0] = '\0';
 	while ((c = getchar()) != '\n' && c != EOF)
 	{
@@ -39,4 +40,15 @@ char* scanString(char *string)
 
 int intLen(int num) {
 	return (int)floor(log10(abs(num))) + 1;
+}
+
+int scanInt()
+{
+	int result;
+	while (!scanf_s(" %d", &result) || result < 1) {
+		puts("please input a posivite number (>1)");
+		while ((getchar()) != '\n'); // clear stdin buffer
+	}
+	getchar();
+	return result;
 }
