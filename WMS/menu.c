@@ -18,13 +18,13 @@ void drawMenu() {
 	const char* strings[] = {
 		"q) Add new client to database.",
 		"w) Remove client from database.",
-		"e) Update client in database.",
+		"e) Update client in database. (NOT IMPLEMENTED YET)",
 		"r) Show data of one client from database.",
 		"a) Show data of all clients.",
 		"s) Add new item to database.",
 		"d) Remove item from database.",
-		"f) Update item in database.",
-		"z) Show data of one item.",
+		"f) Update item in database. (NOT IMPLEMENTED YET)",
+		"z) Show data of one item. (NOT IMPLEMENTED YET)",
 		"x) Show all items of a client.",
 		"c) Exit."
 	};
@@ -123,6 +123,7 @@ int getChoice(sqlite3* db, Client** cl)
 		break;
 	default:
 		exit = 1;
+		free_client(*cl);
 		break;
 	}
 	return exit;

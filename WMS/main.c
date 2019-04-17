@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
 		return(0);
 	}
 	else {
-		fprintf(stdout, "Opened database successfully\n");
+		fprintf(stderr, "Opened database successfully\n");
 	}
 	sql_init(db);
 	drawEntryMenu();
