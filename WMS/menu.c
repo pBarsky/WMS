@@ -2,9 +2,9 @@
 void drawEntryMenu() {
 	int i;
 	const char* strings[] = {
-		"1.Create a new client.",
-		"2.Use an existing client.",
-		"3.Exit."
+		"q) Create a new client.",
+		"w) Use an existing client.",
+		"e) Exit."
 	};
 	system("cls");
 	WHITEBACKGROUND();
@@ -16,16 +16,17 @@ void drawEntryMenu() {
 void drawMenu() {
 	int i;
 	const char* strings[] = {
-		"1. Add new client to database.",
-		"2. Remove client from database.",
-		"3. Update client in database.",
-		"4. Show data of one client from database.",
-		"5. Show data of all clients.",
-		"6. Add new item to database.",
-		"7. Remove item from database.",
-		"8. Update item in database.",
-		"9. Show data of one item",
-		"10. show data of all items"
+		"q) Add new client to database.",
+		"w) Remove client from database.",
+		"e) Update client in database.",
+		"r) Show data of one client from database.",
+		"a) Show data of all clients.",
+		"s) Add new item to database.",
+		"d) Remove item from database.",
+		"f) Update item in database.",
+		"z) Show data of one item.",
+		"x) Show all items of a client.",
+		"c) Exit."
 	};
 	system("cls");
 	WHITEBACKGROUND();
@@ -35,78 +36,94 @@ void drawMenu() {
 	WHITETEXT();
 }
 
-void getChoiceEntry(Client* cl) {
+void getChoiceEntry(sqlite3* db, Client** cl) {
 	char choice;
 	choice = _getch();
 
 	switch (choice) {
-	case '1':
-		cl = create_client();
+	case 'q':
+		*cl = create_client();
+		sql_addClient(db, *cl);
+		system("pause");
 		break;
-	case '2':
-		cl = create_client_fromDB();
+	case 'w':
+		*cl = create_client_fromDB();
 		break;
-	case '3':
+	case 'e':
 		exit(0);
 	default:
+		exit(0);
 		break;
 	}
 }
 
-void getChoice(sqlite3* db, Client* cl)
+int getChoice(sqlite3* db, Client** cl)
 {
 	char choice;
+	int exit = 0;
 	Item* it = NULL;
 	choice = _getch();
-	(" %d", &choice);
 	switch (choice) {
-	case '1':
+	case 'q':
 		system("cls");
-		cl = create_client();
-		sql_addClient(db, cl);
+		if (*cl != NULL) *cl = create_client();
+		sql_addClient(db, *cl);
+		free_client(*cl);
+		system("pause");
+		break;
+	case 'w':
+		system("cls");
+		sql_removeItem(db, *cl);
+		sql_removeClient(db, *cl);
 		free_client(cl);
+		system("pause");
 		break;
-	case '2':
+	case 'e':
 		system("cls");
-		puts("Specify which client you want to affect.\n(You can leave name and surname blank, only the ID matters.)");
-		cl = create_client();
-		sql_removeClient(db, cl);
-		free_client(cl);
+		puts("NOT IMPLEMENTED YET");
+		system("pause");
 		break;
-	case '3':
+	case 'r':
 		system("cls");
-		break;
-	case '4':
-		system("cls");
-		puts("Specify which client you want to show.\n(You can leave name and surname blank, only the ID matters.)");
-		cl = create_client();
 		sql_showClient(db, cl);
-		free_client(cl);
-		puts("No more (or any) data to show.");
+		system("pause");
 		break;
-	case '5':
+	case 'a':
 		system("cls");
 		sql_showAllClients(db);
 		puts("No more (or any) data to show.");
+		system("pause");
 		break;
-	case '6':
+	case 's':
 		system("cls");
-		it = create_item(cl);
-		sql_addItem(db, it, cl);
+		it = create_item(*cl);
+		sql_addItem(db, it, *cl);
 		free_item(it);
-		free_client(cl);
-	case '7':
+		system("pause");
+		break;
+	case 'd':
 		system("cls");
-	case '8':
+		sql_removeClient(db, *cl);
+		system("pause");
+		break;
+	case 'f':
 		system("cls");
-	case '9':
+		puts("NOT IMPLEMENTED YET");
+		system("pause");
+		break;
+	case 'z':
 		system("cls");
-	case '10':
+		puts("NOT IMPLEMENTED YET");
+		system("pause");
+		break;
+	case 'x':
 		system("cls");
-
+		sql_showAllItemsOfClient(db, *cl);
+		system("pause");
 		break;
 	default:
+		exit = 1;
 		break;
 	}
-
+	return exit;
 }

@@ -42,7 +42,7 @@ int default_callback(void* data, int argc, char** argv, char** azColName) {
 }
 
 int client_creation_callback() {
-
+	return 0;
 }
 
 int client_callback(void* data, int argc, char** argv, char** azColName) {

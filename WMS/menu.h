@@ -8,5 +8,5 @@
 #include <conio.h>
 
 void drawMenu();
-void getChoice(sqlite3*, Client*);
-void getChoiceEntry(Client*);
+int getChoice(sqlite3*, Client**);
+void getChoiceEntry(sqlite3*, Client**);

@@ -1,7 +1,7 @@
 #include "menu.h"
 int main(int argc, char* argv[]) {
 	sqlite3* db;
-	Client* cl = NULL;
+	Client** cl = malloc(sizeof(Client * *));
 	char* zErrMsg = 0;
 	int rc;
 	char finished = 0;
@@ -14,12 +14,14 @@ int main(int argc, char* argv[]) {
 	else {
 		fprintf(stdout, "Opened database successfully\n");
 	}
-
 	sql_init(db);
-	//drawEntryMenu();
-	//getChoiceEntry(cl);
-	drawMenu();
-	getChoice(db, cl);
+	drawEntryMenu();
+	getChoiceEntry(db, cl);
+	do {
+		drawMenu();
+		finished = getChoice(db, cl);
+	} while (finished == 0);
+	free(cl);
 	system("pause");
 	return 0;
 }
