@@ -129,11 +129,28 @@ void sql_addItem(sqlite3 *db, Item *it, Client *cl) {
   free(sql);
 }
 
-void sql_removeItem(sqlite3 *db, char* name, Client* cl) {
+void sql_removeItem(sqlite3 *db, char *name, Client *cl) {
   char *sql = malloc(strlen(REMOVEITEM) + strlen(name) + intLen(cl->ID) + 1);
   char *zErrMsg;
   if (sql != NULL) {
-    snprintf(sql, strlen(sql), "DELETE FROM ITEMS WHERE NAME LIKE '%s' AND CLIENT_ID=%d;", name, cl->ID);
+    snprintf(sql, strlen(sql), "DELETE FROM ITEMS WHERE NAME='%s' AND CLIENT_ID=%d;", name, cl->ID);
+  } else {
+    perror("AN ERROR OCCURRED");
+    exit(-1);
+  }
+  sqlite3_exec(db, sql, default_callback, 0, &zErrMsg);
+  if (zErrMsg) {
+    puts(zErrMsg);
+  }
+  sqlite3_free(zErrMsg);
+  free(sql);
+}
+
+void sql_updateItem(sqlite3 *db, Item *it) {
+  char *sql = malloc(strlen(UPDATEITEM) + intLen(it->ID) + intLen(it->QUANTITY) + 1);
+  char *zErrMsg;
+  if (sql != NULL) {
+    snprintf(sql, strlen(sql), "UPDATE ITEMS SET QUANTITY=%d WHERE ID=%d;", it->QUANTITY, it->ID);
   } else {
     perror("AN ERROR OCCURRED");
     exit(-1);

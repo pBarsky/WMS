@@ -62,7 +62,9 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   int exit = 0;
   Item *it = NULL;
   char *itemsName;
+  int amount = 0;
   choice = _getch();
+
   switch (choice) {
   case 'q': //delete account
     system("cls");
@@ -96,6 +98,36 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 's': //update item
     system("cls");
+    choice = 0;
+    sql_showAllItemsOfClient(db, *cl);
+    puts("Do you want to:");
+    puts("q) Deposit items.");
+    puts("w) Withdraw items.");
+    choice = _getch();
+    puts("Specify name of the item.");
+    itemsName = scanString();
+    it = create_item_fromDB(db, *cl, itemsName);
+    switch (choice) {
+    case 'q':
+      puts("Specify amount you want to deposit.");
+      amount = scanInt();
+      it->QUANTITY += amount;
+      sql_updateItem(db, it);
+      break;
+    case 'w':
+      puts("Specify amount you want to withdraw.");
+      amount = scanInt();
+      if (amount <= it->QUANTITY) {
+        it->QUANTITY -= amount;
+      } else {
+        puts("You dont have enough product.\nReturning to menu...");
+        break;
+      }
+      sql_updateItem(db, it);
+      break;
+    default:
+      break;
+    }
     puts("NOT IMPLEMENTED YET");
     system("pause");
     break;

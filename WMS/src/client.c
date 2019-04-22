@@ -1,5 +1,4 @@
 #include "../include/client.h"
-#define SEARCHCLIENT "SELECT * FROM CLIENTS WHERE NAME LIKE '' AND SURNAME LIKE '';"
 
 Client *create_client(int *IDs) {
   char *tmp = NULL;

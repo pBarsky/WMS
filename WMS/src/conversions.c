@@ -56,7 +56,7 @@ int intLen(int num) { return (int)floor(log10(abs(num))) + 1; }
 int scanInt() {
   int result, _getcharResult;
   while (!scanf_s(" %d", &result) || result < 1) {
-    puts("please input a posivite number (>1)");
+    puts("please input a posivite number (>=1)");
     while ((getchar()) != '\n')
       ;  // clear stdin buffer
   }
