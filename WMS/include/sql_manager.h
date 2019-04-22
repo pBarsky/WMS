@@ -24,26 +24,32 @@
 #define SHOWALLCLIENTS "SELECT * FROM CLIENTS;"
 
 #define INSERTITEM "INSERT INTO ITEMS (ID, NAME, QUANTITY, CLIENT_ID) VALUES(, '', , );"
-#define REMOVEITEM "DELETE FROM ITEMS WHERE ID=;"
-#define SHOWITEM "SELECT * FROM ITEMS WHERE ID=;"
+#define REMOVEITEM "DELETE FROM ITEMS WHERE NAME LIKE '' AND CLIENT_ID=;"
+#define REMOVEALLITEMS "DELETE FROM ITEMS WHERE CLIENT_ID=;"
+//#define SHOWITEM "SELECT * FROM ITEMS WHERE ID=;"
 #define SHOWALLITEMS "SELECT * FROM ITEMS;"
 #define SHOWALLITEMSOFCLIENT "SELECT * FROM ITEMS WHERE CLIENT_ID=;"
 
+#define DUMPLASTIDS "UPDATE UTILITY SET LAST_CLIENT_ID=, LAST_ITEM_ID=;"
 
-int default_callback(void*, int, char**, char**);
-int client_callback(void*, int, char**, char**);
+int default_callback(void *, int, char **, char **);
+int client_callback(void *, int, char **, char **);
+int fetchIDs(int *, int, char **, char **);
 
-void sql_init(sqlite3*);
-void sql_addClient(sqlite3*, Client*);
-void sql_removeClient(sqlite3*, Client*);
-void sql_updateClient(sqlite3*, Client*);
-void sql_showAllClients(sqlite3*);
-void sql_showClient(sqlite3*, Client*);
+void sql_init(sqlite3 *);
+void sql_addClient(sqlite3 *, Client *);
+void sql_removeClient(sqlite3 *, Client *);
+//void sql_updateClient(sqlite3*, Client*);
+void sql_showAllClients(sqlite3 *);
+//void sql_showClient(sqlite3*, Client*);
 
-void sql_addItem(sqlite3*, Item*, Client*);
-void sql_removeItem(sqlite3*, Item*);
-void sql_removeAllitems(sqlite3*, Client*);
-void sql_updateItem(sqlite3*, Item*);
-void sql_showAllItems(sqlite3*);
-void sql_showAllItemsOfClient(sqlite3*, Client*);
-void sql_showItem(sqlite3*, Item*);
+void sql_addItem(sqlite3 *, Item *, Client *);
+void sql_removeItem(sqlite3 *, char *, Client *);
+void sql_removeAllItems(sqlite3 *, Client *);
+void sql_updateItem(sqlite3 *, Item *);
+//void sql_showAllItems(sqlite3*);
+void sql_showAllItemsOfClient(sqlite3 *, Client *);
+void sql_dump_lastIDs(sqlite3 *, int *);
+//void sql_showItem(sqlite3*, Item*);
+
+void sql_setLastIDs(sqlite3 *db, int *);

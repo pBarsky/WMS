@@ -4,11 +4,11 @@
 #include <string.h>
 #include "client.h"
 typedef struct item {
-	int ID;
-	char* NAME;
-	int QUANTITY;
-	int CLIENT_ID;
+  int ID;
+  char* NAME;
+  int QUANTITY;
+  int CLIENT_ID;
 } Item;
 
-Item* create_item(Client*);
+Item* create_item(Client*, int* IDs);
 void free_item(Item* item);
