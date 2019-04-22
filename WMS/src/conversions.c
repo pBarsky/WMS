@@ -1,6 +1,6 @@
-#include "conversions.h"
+#include "../include/conversions.h"
 
-int stringToInt(const char a[]) {
+int stringToInt(const char* a) {
 	int c, sign = 0, offset, n;
 	if (a[0] == '-') {
 		sign = -1;
@@ -23,16 +23,42 @@ int stringToInt(const char a[]) {
 
 char* scanString()
 {
-	
+
 	int c; //because getchar() -> int
 	int i = 0;
 	char* string = malloc(sizeof(char));
-	string[0] = '\0';
+	char* tmp = NULL;
+	if (string != NULL)
+	{
+		string[0] = '\0';
+	}
+	else
+	{
+		perror("AN ERROR OCCURRED");
+		exit(-1);
+	}
 	while ((c = getchar()) != '\n' && c != EOF)
 	{
-		string = realloc(string, i + 2);
-		string[i] = (char)c;
-		string[i + 1] = '\0';
+		tmp = realloc(string, (size_t)i + 2);
+		if (tmp != NULL)
+		{
+			string = tmp;
+		}
+		else
+		{
+			perror("AN ERROR OCCURRED");
+			exit(-1);
+		}
+		if (string != NULL)
+		{
+			string[i] = (char)c;
+			string[i + 1] = '\0';
+		}
+		else
+		{
+			perror("AN ERROR OCCURRED");
+			exit(-1);
+		}
 		i++;
 	}
 	return string;
@@ -44,11 +70,11 @@ int intLen(int num) {
 
 int scanInt()
 {
-	int result;
+	int result, _getcharResult;
 	while (!scanf_s(" %d", &result) || result < 1) {
 		puts("please input a posivite number (>1)");
 		while ((getchar()) != '\n'); // clear stdin buffer
 	}
-	getchar();
+	_getcharResult = getchar();
 	return result;
 }

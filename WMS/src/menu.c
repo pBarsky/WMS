@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "../include/menu.h"
 void drawEntryMenu() {
 	int i;
 	const char* strings[] = {
@@ -47,7 +47,7 @@ void getChoiceEntry(sqlite3* db, Client** cl) {
 		system("pause");
 		break;
 	case 'w':
-		*cl = create_client_fromDB();
+		*cl = create_client_fromDB(db);
 		break;
 	case 'e':
 		exit(0);
@@ -66,14 +66,14 @@ int getChoice(sqlite3* db, Client** cl)
 	switch (choice) {
 	case 'q':
 		system("cls");
-		if (*cl != NULL) *cl = create_client();
+		if (*cl != NULL) *cl = create_client(); //TODO: REMOVE THIS OPTION
 		sql_addClient(db, *cl);
 		free_client(*cl);
 		system("pause");
 		break;
 	case 'w':
 		system("cls");
-		sql_removeItem(db, *cl);
+		sql_removeAllItems(db, *cl);
 		sql_removeClient(db, *cl);
 		free_client(cl);
 		system("pause");

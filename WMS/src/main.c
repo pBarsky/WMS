@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "../include/menu.h"
 int main(int argc, char* argv[]) {
 	sqlite3* db;
 	Client** cl = malloc(sizeof(Client * *));
