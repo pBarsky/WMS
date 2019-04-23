@@ -14,3 +14,13 @@ wms\.txt
 WMS/x64/Release/
 
 x64/Release/
+
+*.db
+
+\.vs/WMS/v16/
+
+WMS/raport\.txt
+
+WMS/menu\.txt
+
+\.vs/
