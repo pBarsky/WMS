@@ -19,9 +19,9 @@ void drawMenu() {
       "w) List all clients.",
       "e) Add new item to your inventory.",
       "a) Delete item from your inventory.",
-      "s) Update item\'s quantity in inventory. (NOT IMPLEMENTED YET)",
-      "d) Show data of one item. (NOT IMPLEMENTED YET)",
-      "z) Show all items of your items.",
+      "s) Update item\'s quantity in inventory.",
+      "d) Look for an item.",
+      "z) List all items in your inventory.",
       "x) Exit."};
   system("cls");
   WHITEBACKGROUND();
@@ -43,7 +43,7 @@ void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'w':
     *cl = create_client_fromDB(db);
-    if (*cl == NULL) {
+    if (*cl == NULL || (*cl)->NAME == NULL || (*cl)->SURNAME == NULL) {
       puts("No client found.");
       system("pause");
       exit(0);
@@ -104,17 +104,24 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     puts("q) Deposit items.");
     puts("w) Withdraw items.");
     choice = _getch();
-    puts("Specify name of the item.");
-    itemsName = scanString();
-    it = create_item_fromDB(db, *cl, itemsName);
     switch (choice) {
     case 'q':
+      puts("Specify name of the item.");
+      itemsName = scanString();
+      it = create_item_fromDB(db, *cl, itemsName);
+      free(itemsName);
       puts("Specify amount you want to deposit.");
       amount = scanInt();
       it->QUANTITY += amount;
       sql_updateItem(db, it);
+      printf("New balance: %d", it->QUANTITY);
+      free_item(it);
       break;
     case 'w':
+      puts("Specify name of the item.");
+      itemsName = scanString();
+      it = create_item_fromDB(db, *cl, itemsName);
+      free(itemsName);
       puts("Specify amount you want to withdraw.");
       amount = scanInt();
       if (amount <= it->QUANTITY) {
@@ -124,16 +131,20 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
         break;
       }
       sql_updateItem(db, it);
+      printf("New balance: %d", it->QUANTITY);
+      free_item(it);
       break;
     default:
+      puts("You didnt specify an option. Returning to menu...");
       break;
     }
-    puts("NOT IMPLEMENTED YET");
     system("pause");
     break;
   case 'd': //look for item
     system("cls");
-    puts("NOT IMPLEMENTED YET");
+    puts("Please enter name of item you are looking for.");
+    itemsName = scanString();
+    sql_showItem(db, *cl, itemsName);
     system("pause");
     break;
   case 'z': //list all items

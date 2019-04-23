@@ -57,6 +57,8 @@ int item_creation_callback(Item *it, int argc, char **argv, char **azColName) {
 }
 
 void free_item(Item *item) {
-  free(item->NAME);
+  if (item->NAME != NULL) {
+    free(item->NAME);
+  }
   free(item);
 }

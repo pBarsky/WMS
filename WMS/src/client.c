@@ -39,6 +39,8 @@ Client *create_client_fromDB(sqlite3 *db) {
   char *zErrMsg = NULL;
   char *sql = NULL;
   Client *cl = malloc(sizeof(Client));
+  cl->NAME = NULL;
+  cl->SURNAME = NULL;
 
   puts("Please input your name: ");
   name = scanString();
@@ -76,7 +78,11 @@ int client_creation_callback(Client *cl, int argc, char **argv, char **azColName
 }
 
 void free_client(Client *client) {
-  free(client->NAME);
-  free(client->SURNAME);
+  if (client->NAME != NULL) {
+    free(client->NAME);
+  }
+  if (client->SURNAME != NULL) {
+    free(client->SURNAME);
+  }
   free(client);
 }
