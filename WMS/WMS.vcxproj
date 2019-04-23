@@ -22,32 +22,32 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B789A43D-4E3F-4FC6-B793-B2DA4B43A98B}</ProjectGuid>
     <RootNamespace>WMS</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -115,24 +115,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="client.c" />
-    <ClCompile Include="conversions.c" />
-    <ClCompile Include="items.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="sqlite3.c" />
-    <ClCompile Include="sql_manager.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="client.h" />
-    <ClInclude Include="conversions.h" />
-    <ClInclude Include="items.h" />
-    <ClInclude Include="sqlite3.h" />
-    <ClInclude Include="sql_manager.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="test.db" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="menu.txt" />
+    <Text Include="raport.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="3rdparty\src\sqlite3.c" />
+    <ClCompile Include="src\client.c" />
+    <ClCompile Include="src\conversions.c" />
+    <ClCompile Include="src\items.c" />
+    <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\menu.c" />
+    <ClCompile Include="src\sql_manager.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3rdparty\include\sqlite3.h" />
+    <ClInclude Include="include\client.h" />
+    <ClInclude Include="include\conversions.h" />
+    <ClInclude Include="include\items.h" />
+    <ClInclude Include="include\menu.h" />
+    <ClInclude Include="include\sql_manager.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>
