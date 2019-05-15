@@ -17,6 +17,9 @@ int default_callback(void *data, int argc, char **argv, char **azColName) {
 }
 
 int item_callback(void *data, int argc, char **argv, char **azColName) {
+    //kopiowanie wszystkich danych do tablicy, zeby mozna bylo przewijac interfejs
+    //i przekazywanie przez referencje w mainie zamiast **
+    //no i te hasla
   printf("|| %10s = %12s|| \n", azColName[1], argv[1] ? argv[1] : "NULL");
   printf("|| %10s = %12s|| \n", azColName[2], argv[2] ? argv[2] : "NULL");
   printf("\n\n");

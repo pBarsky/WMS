@@ -3,7 +3,6 @@
 Item *create_item(Client *cl, int *IDs) {
   char *tmp = NULL;
   Item *item = malloc(sizeof(Item)); // memory for client
-  puts("Enter item ID");
   if (item != NULL) {
     item->ID = IDs[1]++;
   } else {
