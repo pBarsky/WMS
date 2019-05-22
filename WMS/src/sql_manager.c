@@ -27,7 +27,7 @@ int item_callback(void *data, int argc, char **argv, char **azColName) {
 }
 
 int client_callback(void *data, int argc, char **argv, char **azColName) {
-  printf("||ID: %4s\tName: %12s\tSurname: %12s||\n", argv[0], argv[1], argv[2]);
+  printf("||ID: %4s\tName: %12s||\n", argv[0], argv[1]);
   return 0;
 }
 
@@ -38,12 +38,12 @@ int fetchIDs(int *data, int argc, char **argv, char **azColName) {
 }
 
 void sql_addClient(sqlite3 *db, Client *cl) {
-  char *sql = malloc(strlen(INSERTCLIENT) + strlen(cl->NAME) + strlen(cl->SURNAME) + intLen(cl->ID) + 1);
+  char *sql = malloc(strlen(INSERTCLIENT) + strlen(cl->NAME) + strlen(cl->PASSWD) + intLen(cl->ID) + 1);
   char *zErrMsg;
   if (sql != NULL) {
     snprintf(
         sql, strlen(sql),
-        "INSERT INTO CLIENTS (ID, NAME, SURNAME) VALUES(%d, \'%s\', \'%s\');", cl->ID, cl->NAME, cl->SURNAME);
+        "INSERT INTO CLIENTS (ID, NAME, PASSWD) VALUES(%d, \'%s\', \'%s\');", cl->ID, cl->NAME, cl->PASSWD);
   } else {
     perror("AN ERROR OCCURRED");
     exit(-1);
@@ -83,7 +83,7 @@ void sql_removeClient(sqlite3 *db, Client *cl) {
 //
 //  if (sql != NULL) {
 //    snprintf(sql, strlen(sql),
-//             "UPDATE CLIENTS SET NAME='%s', SURNAME='%s' WHERE ID=%d;", newName, newSurname, cl->ID);
+//             "UPDATE CLIENTS SET NAME='%s', PASSWD='%s' WHERE ID=%d;", newName, newSurname, cl->ID);
 //  } else {
 //    perror("AN ERROR OCCURRED");
 //    exit(-1);

@@ -43,8 +43,8 @@ void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'w':
     *cl = create_client_fromDB(db);
-    if (*cl == NULL || (*cl)->NAME == NULL || (*cl)->SURNAME == NULL) {
-      puts("No client found.");
+    if (*cl == NULL || (*cl)->NAME == NULL || (*cl)->PASSWD== NULL) {
+      puts("Bad login or password.");
       system("pause");
       exit(0);
     }

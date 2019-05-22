@@ -2,6 +2,8 @@
 
 Client *create_client(int *IDs) {
   char *tmp = NULL;
+  char *hexDump= malloc(41);
+  char *binDump = malloc(21);
   Client *cl = malloc(sizeof(Client)); // memory for client
   int success = 0;
   if (cl != NULL) {
@@ -16,11 +18,16 @@ Client *create_client(int *IDs) {
       exit(-1);
     }
     free(tmp);
-    puts("Enter surname: ");
+    puts("Enter passwd: ");
     tmp = scanString();
-    cl->SURNAME = malloc(strlen(tmp) + 1);
-    if (cl->SURNAME != NULL) {
-      strcpy_s(cl->SURNAME, strlen(tmp) + 1, tmp);
+    cl->PASSWD = malloc(41);
+    if (cl->PASSWD != NULL) {
+      //strcpy_s(cl->PASSWD, strlen(tmp) + 1, tmp);
+      SHA1(binDump, tmp, strlen(tmp));
+      binToHex(hexDump, binDump);
+      if (hexDump != NULL) {
+        strcpy_s(cl->PASSWD, strlen(hexDump) + 1, hexDump);
+      }
     } else {
       perror("AN ERROR OCCURRED");
       exit(-1);
@@ -35,20 +42,28 @@ Client *create_client(int *IDs) {
 
 Client *create_client_fromDB(sqlite3 *db) {
   char *name = NULL;
-  char *surname = NULL;
+  char *passwd = NULL;
   char *zErrMsg = NULL;
   char *sql = NULL;
+  char *binDump = malloc(21);
+  char *hexDump = malloc(41);
   Client *cl = malloc(sizeof(Client));
-  cl->NAME = NULL;
-  cl->SURNAME = NULL;
+  if (cl != NULL) {
+    cl->NAME = NULL;
+    cl->PASSWD = NULL;
+  }
 
-  puts("Please input your name: ");
+  puts("Please input your login: ");
   name = scanString();
-  puts("Please input your surname: ");
-  surname = scanString();
-  sql = malloc(strlen(SEARCHCLIENT) + strlen(name) + strlen(surname) + 1);
+  puts("Please input your password: ");
+  passwd = scanString();
+  SHA1(binDump, passwd, strlen(passwd));
+  binToHex(hexDump, binDump);
+  if (hexDump != NULL) {
+    sql = malloc(strlen(SEARCHCLIENT) + strlen(name) + strlen(hexDump) + 1);
+  }
   if (sql != NULL) {
-    snprintf(sql, strlen(sql), "SELECT * FROM CLIENTS WHERE NAME LIKE '%s' AND SURNAME LIKE '%s';", name, surname);
+    snprintf(sql, strlen(sql), "SELECT * FROM CLIENTS WHERE NAME='%s' AND PASSWD='%s';", name, hexDump);
   } else {
     perror("AN ERROR OCCURED");
     exit(-1);
@@ -66,9 +81,9 @@ int client_creation_callback(Client *cl, int argc, char **argv, char **azColName
     perror("AN ERROR OCCURRED");
     exit(-1);
   }
-  cl->SURNAME = malloc(strlen(argv[2]) + 1);
-  if (cl->SURNAME != NULL) {
-    strcpy_s(cl->SURNAME, strlen(argv[2]) + 1, argv[2]);
+  cl->PASSWD = malloc(strlen(argv[2]) + 1);
+  if (cl->PASSWD != NULL) {
+    strcpy_s(cl->PASSWD, strlen(argv[2]) + 1, argv[2]);
   } else {
     perror("AN ERROR OCCURRED");
     exit(-1);
@@ -81,8 +96,8 @@ void free_client(Client *client) {
   if (client->NAME != NULL) {
     free(client->NAME);
   }
-  if (client->SURNAME != NULL) {
-    free(client->SURNAME);
+  if (client->PASSWD != NULL) {
+    free(client->PASSWD);
   }
   free(client);
 }

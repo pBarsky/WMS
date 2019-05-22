@@ -118,10 +118,7 @@
     <None Include="test.db" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="menu.txt" />
-    <Text Include="raport.txt" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="3rdparty\src\sha1.c" />
     <ClCompile Include="3rdparty\src\sqlite3.c" />
     <ClCompile Include="src\client.c" />
     <ClCompile Include="src\conversions.c" />
@@ -131,12 +128,16 @@
     <ClCompile Include="src\sql_manager.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="3rdparty\include\sha1.h" />
     <ClInclude Include="3rdparty\include\sqlite3.h" />
     <ClInclude Include="include\client.h" />
     <ClInclude Include="include\conversions.h" />
     <ClInclude Include="include\items.h" />
     <ClInclude Include="include\menu.h" />
     <ClInclude Include="include\sql_manager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
