@@ -1,6 +1,5 @@
 #pragma once
 #include "../3rdparty/include/sqlite3.h"
-#include "../3rdparty/include/sha1.h"
 #include "conversions.h"
 #include <errno.h>
 #include <stdio.h>
