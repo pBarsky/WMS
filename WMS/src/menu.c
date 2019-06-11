@@ -43,8 +43,8 @@ void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'w':
     *cl = create_client_fromDB(db);
-    if (*cl == NULL || (*cl)->NAME == NULL || (*cl)->PASSWD== NULL) {
-      puts("Bad login or password.");
+    if (*cl == NULL || (*cl)->NAME == NULL) {
+      puts("No client found.");
       system("pause");
       exit(0);
     }
@@ -114,7 +114,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
       amount = scanInt();
       it->QUANTITY += amount;
       sql_updateItem(db, it);
-      printf("New balance: %d", it->QUANTITY);
+      printf("New balance: %d\n", it->QUANTITY);
       free_item(it);
       break;
     case 'w':

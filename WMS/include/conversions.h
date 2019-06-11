@@ -7,4 +7,5 @@
 int stringToInt(const char*);
 int intLen(int);
 int scanInt();
-char* scanString();
+int hashPassword(const char*);
+char *scanString();

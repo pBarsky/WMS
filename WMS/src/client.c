@@ -18,20 +18,9 @@ Client *create_client(int *IDs) {
       exit(-1);
     }
     free(tmp);
-    puts("Enter passwd: ");
+    puts("Enter password: ");
     tmp = scanString();
-    cl->PASSWD = malloc(41);
-    if (cl->PASSWD != NULL) {
-      //strcpy_s(cl->PASSWD, strlen(tmp) + 1, tmp);
-      SHA1(binDump, tmp, strlen(tmp));
-      binToHex(hexDump, binDump);
-      if (hexDump != NULL) {
-        strcpy_s(cl->PASSWD, strlen(hexDump) + 1, hexDump);
-      }
-    } else {
-      perror("AN ERROR OCCURRED");
-      exit(-1);
-    }
+    cl->PASSWD = hashPassword(tmp);
     free(tmp);
   } else {
     perror("AN ERROR OCCURED");
@@ -42,28 +31,27 @@ Client *create_client(int *IDs) {
 
 Client *create_client_fromDB(sqlite3 *db) {
   char *name = NULL;
-  char *passwd = NULL;
+  char *password = NULL;
   char *zErrMsg = NULL;
   char *sql = NULL;
-  char *binDump = malloc(21);
-  char *hexDump = malloc(41);
+  int hash = 0;
   Client *cl = malloc(sizeof(Client));
   if (cl != NULL) {
     cl->NAME = NULL;
-    cl->PASSWD = NULL;
+  } else {
+    perror("AN ERROR OCCURRED");
+    exit(-1);
   }
 
   puts("Please input your login: ");
   name = scanString();
   puts("Please input your password: ");
-  passwd = scanString();
-  SHA1(binDump, passwd, strlen(passwd));
-  binToHex(hexDump, binDump);
-  if (hexDump != NULL) {
-    sql = malloc(strlen(SEARCHCLIENT) + strlen(name) + strlen(hexDump) + 1);
-  }
+  password = scanString();
+  hash = hashPassword(password);
+  free(password);
+  sql = malloc(strlen(SEARCHCLIENT) + strlen(name) + intLen(hash) + 1);
   if (sql != NULL) {
-    snprintf(sql, strlen(sql), "SELECT * FROM CLIENTS WHERE NAME='%s' AND PASSWD='%s';", name, hexDump);
+    snprintf(sql, strlen(sql), "SELECT * FROM CLIENTS WHERE NAME='%s' AND PASSWD=%d;", name, hash);
   } else {
     perror("AN ERROR OCCURED");
     exit(-1);
@@ -81,23 +69,13 @@ int client_creation_callback(Client *cl, int argc, char **argv, char **azColName
     perror("AN ERROR OCCURRED");
     exit(-1);
   }
-  cl->PASSWD = malloc(strlen(argv[2]) + 1);
-  if (cl->PASSWD != NULL) {
-    strcpy_s(cl->PASSWD, strlen(argv[2]) + 1, argv[2]);
-  } else {
-    perror("AN ERROR OCCURRED");
-    exit(-1);
-  }
-
+  cl->PASSWD = stringToInt(argv[2]);
   return 0;
 }
 
 void free_client(Client *client) {
   if (client->NAME != NULL) {
     free(client->NAME);
-  }
-  if (client->PASSWD != NULL) {
-    free(client->PASSWD);
   }
   free(client);
 }

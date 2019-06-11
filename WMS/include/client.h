@@ -6,12 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define SEARCHCLIENT "SELECT * FROM CLIENTS WHERE NAME='' AND SURNAME='';"
+#define SEARCHCLIENT "SELECT NAME FROM CLIENTS WHERE NAME LIKE '';"
 
 typedef struct client {
   int ID;
   char *NAME;
-  char *PASSWD;
+  int PASSWD;
 } Client;
 
 Client *create_client(int *);

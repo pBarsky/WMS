@@ -38,12 +38,12 @@ int fetchIDs(int *data, int argc, char **argv, char **azColName) {
 }
 
 void sql_addClient(sqlite3 *db, Client *cl) {
-  char *sql = malloc(strlen(INSERTCLIENT) + strlen(cl->NAME) + strlen(cl->PASSWD) + intLen(cl->ID) + 1);
+  char *sql = malloc(strlen(INSERTCLIENT) + strlen(cl->NAME) + intLen(cl->PASSWD) + intLen(cl->ID) + 1);
   char *zErrMsg;
   if (sql != NULL) {
     snprintf(
         sql, strlen(sql),
-        "INSERT INTO CLIENTS (ID, NAME, PASSWD) VALUES(%d, \'%s\', \'%s\');", cl->ID, cl->NAME, cl->PASSWD);
+        "INSERT INTO CLIENTS (ID, NAME, PASSWD) VALUES(%d, \'%s\', %d);", cl->ID, cl->NAME, cl->PASSWD);
   } else {
     perror("AN ERROR OCCURRED");
     exit(-1);
@@ -72,46 +72,6 @@ void sql_removeClient(sqlite3 *db, Client *cl) {
   sqlite3_free(zErrMsg);
   free(sql);
 }
-
-// void sql_updateClient(sqlite3* db, Client* cl) {
-//  char* sql = malloc(strlen(UPDATECLIENT) + intLen(cl->ID) + 1);
-//  char *zErrMsg, *newName, *newSurname;
-//  puts("Please enter new name for the client.");
-//  newName = scanString();
-//  puts("Please enter new surname for the client");
-//  newSurname = scanString();
-//
-//  if (sql != NULL) {
-//    snprintf(sql, strlen(sql),
-//             "UPDATE CLIENTS SET NAME='%s', PASSWD='%s' WHERE ID=%d;", newName, newSurname, cl->ID);
-//  } else {
-//    perror("AN ERROR OCCURRED");
-//    exit(-1);
-//  }
-//  sqlite3_exec(db, sql, NULL, 0, &zErrMsg);
-//  if (zErrMsg) {
-//    puts(zErrMsg);
-//  }
-//  sqlite3_free(zErrMsg);
-//  free(sql);
-//}
-
-//void sql_showClient(sqlite3 *db, Client *cl) {
-//  char *sql = malloc(strlen(SHOWCLIENT) + intLen(cl->ID) + 1);
-//  char *zErrMsg;
-//  if (sql != NULL) {
-//    snprintf(sql, strlen(sql), "SELECT * FROM CLIENTS WHERE ID=%d;", cl->ID);
-//  } else {
-//    perror("AN ERROR OCCURRED");
-//    exit(-1);
-//  }
-//  sqlite3_exec(db, sql, client_callback, 0, &zErrMsg);
-//  if (zErrMsg) {
-//    puts(zErrMsg);
-//  }
-//  sqlite3_free(zErrMsg);
-//  free(sql);
-//}
 
 void sql_showAllClients(sqlite3 *db) {
   char *zErrMsg;

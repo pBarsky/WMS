@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define SEARCHITEM "SELECT * FROM ITEM WHERE NAME LIKE '' AND CLIENT_ID=;"
+#define SEARCHITEM "SELECT NAME, QUANTITY FROM ITEM WHERE NAME LIKE '' AND CLIENT_ID=;"
 
 typedef struct item {
   int ID;
