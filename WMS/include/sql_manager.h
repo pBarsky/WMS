@@ -35,7 +35,8 @@
 
 int default_callback(void *, int, char **, char **);
 int item_callback(void *, int, char **, char **);
-int client_callback(void *, int, char **, char **);
+void item_list_callback(ItemList *, int, char **, char **);
+  int client_callback(void *, int, char **, char **);
 int fetchIDs(int *, int, char **, char **);
 
 void sql_init(sqlite3 *);
@@ -47,7 +48,7 @@ void sql_addItem(sqlite3 *, Item *, Client *);
 void sql_removeItem(sqlite3 *, char *, Client *);
 void sql_removeAllItems(sqlite3 *, Client *);
 void sql_updateItem(sqlite3 *, Item *);
-void sql_showAllItemsOfClient(sqlite3 *, Client *);
+void sql_showAllItemsOfClient(sqlite3 *, Client *, ItemList **);
 void sql_dump_lastIDs(sqlite3 *, int *);
 void sql_showItem(sqlite3 *, Client *, char *);
 

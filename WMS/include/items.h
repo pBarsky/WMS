@@ -12,6 +12,11 @@ typedef struct item {
   int CLIENT_ID;
 } Item;
 
+typedef struct itemList {
+  int size;
+  Item **list;
+} ItemList;
+
 Item *create_item(Client *, int *, char*);
 Item *create_item_fromDB(sqlite3 *, Client* cl, char*);
 int item_creation_callback(Item *, int, char **, char **);

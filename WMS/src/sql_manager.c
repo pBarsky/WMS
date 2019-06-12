@@ -15,11 +15,19 @@ int default_callback(void *data, int argc, char **argv, char **azColName) {
   printf("\n\n");
   return 0;
 }
+void item_list_callback(ItemList *data, int argc, char **argv, char **azColname) {
+  Item *it = malloc(sizeof(Item));
+  it->ID = stringToInt(argv[0]);
+  it->NAME = malloc(strlen(argv[1]) + 1);
+  strcpy_s(it->NAME, strlen(argv[1]), argv[1]);
+  it->QUANTITY = stringToInt(argv[2]);
+  it->CLIENT_ID = stringToInt(argv[3]);
+  data->size++;
+  data->list = malloc(data->size + sizeof(Item));
+  data->list[data->size - 1] = it;
+}
 
 int item_callback(void *data, int argc, char **argv, char **azColName) {
-    //kopiowanie wszystkich danych do tablicy, zeby mozna bylo przewijac interfejs
-    //i przekazywanie przez referencje w mainie zamiast **
-    //no i te hasla
   printf("|| %10s = %12s|| \n", azColName[1], argv[1] ? argv[1] : "NULL");
   printf("|| %10s = %12s|| \n", azColName[2], argv[2] ? argv[2] : "NULL");
   printf("\n\n");
@@ -177,17 +185,7 @@ void sql_setLastIDs(sqlite3 *db, int *IDs) {
   sqlite3_free(zErrMsg);
 }
 
-//void sql_showAllItems(sqlite3 *db) {
-//  char *zErrMsg;
-//  int success = 0;
-//  sqlite3_exec(db, SHOWALLCLIENTS, default_callback, 0, &zErrMsg);
-//  if (zErrMsg) {
-//    puts(zErrMsg);
-//  }
-//  sqlite3_free(zErrMsg);
-//}
-
-void sql_showAllItemsOfClient(sqlite3 *db, Client *cl) {
+void sql_showAllItemsOfClient(sqlite3 *db, Client *cl, ItemList *items) {
   char *sql = malloc(strlen(SHOWALLITEMSOFCLIENT) + intLen(cl->ID) + 1);
   char *zErrMsg;
   if (sql != NULL) {
@@ -196,7 +194,7 @@ void sql_showAllItemsOfClient(sqlite3 *db, Client *cl) {
     perror("AN ERROR OCCURRED");
     exit(-1);
   }
-  sqlite3_exec(db, sql, item_callback, 0, &zErrMsg);
+  sqlite3_exec(db, sql, item_list_callback, &items, &zErrMsg);
   if (zErrMsg) {
     puts(zErrMsg);
   }

@@ -57,6 +57,9 @@ void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
 int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   char choice;
   int exit = 0;
+  ItemList *items = malloc(sizeof(ItemList));
+  items->list = NULL;
+  items->size = 0;
   Item *it = NULL;
   char *itemsName;
   int amount = 0;
@@ -86,7 +89,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'a': //remove item
     system("cls");
-    sql_showAllItemsOfClient(db, *cl);
+    sql_showAllItemsOfClient(db, *cl, items);
     puts("Please enter items name.: ");
     itemsName = scanString();
     sql_removeItem(db, itemsName, *cl);
@@ -96,7 +99,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   case 's': //update item
     system("cls");
     choice = 0;
-    sql_showAllItemsOfClient(db, *cl);
+    sql_showAllItemsOfClient(db, *cl, items);
     puts("Do you want to:");
     puts("q) Deposit items.");
     puts("w) Withdraw items.");
@@ -156,7 +159,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'z': //list all items
     system("cls");
-    sql_showAllItemsOfClient(db, *cl);
+    sql_showAllItemsOfClient(db, *cl, items);
     system("pause");
     break;
   case 'x': //exit
