@@ -12,7 +12,7 @@ typedef struct item {
   int CLIENT_ID;
 } Item;
 
-Item *create_item(Client *, int *);
+Item *create_item(Client *, int *, char*);
 Item *create_item_fromDB(sqlite3 *, Client* cl, char*);
 int item_creation_callback(Item *, int, char **, char **);
 

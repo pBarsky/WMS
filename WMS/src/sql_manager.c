@@ -129,8 +129,8 @@ void sql_updateItem(sqlite3 *db, Item *it) {
   if (zErrMsg) {
     puts(zErrMsg);
   }
-  sqlite3_free(zErrMsg);
   free(sql);
+  sqlite3_free(zErrMsg);
 }
 
 void sql_removeAllItems(sqlite3 *db, Client *cl) {

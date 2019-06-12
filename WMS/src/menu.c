@@ -51,9 +51,6 @@ void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'e':
     exit(0);
-  default:
-    exit(0);
-    break;
   }
 }
 
@@ -82,7 +79,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'e': //add new item
     system("cls");
-    it = create_item(*cl, IDs);
+    it = create_item(*cl, IDs, NULL);
     sql_addItem(db, it, *cl);
     free_item(it);
     system("pause");
@@ -109,30 +106,40 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
       puts("Specify name of the item.");
       itemsName = scanString();
       it = create_item_fromDB(db, *cl, itemsName);
+      if (it->ID == -1) {
+        puts("Item not found in inventory. New item will be created");
+        it = create_item(*cl, IDs, itemsName);
+        sql_addItem(db, it, *cl);
+      } else {
+        puts("Specify amount you want to deposit.");
+        amount = scanInt();
+        it->QUANTITY += amount;
+        sql_updateItem(db, it);
+        printf("New balance: %d\n", it->QUANTITY);
+      }
       free(itemsName);
-      puts("Specify amount you want to deposit.");
-      amount = scanInt();
-      it->QUANTITY += amount;
-      sql_updateItem(db, it);
-      printf("New balance: %d\n", it->QUANTITY);
       free_item(it);
       break;
     case 'w':
       puts("Specify name of the item.");
       itemsName = scanString();
       it = create_item_fromDB(db, *cl, itemsName);
-      free(itemsName);
-      puts("Specify amount you want to withdraw.");
-      amount = scanInt();
-      if (amount <= it->QUANTITY) {
-        it->QUANTITY -= amount;
+      if (it->ID == -1) {
+        puts("Item not found in inventory.");
       } else {
-        puts("You dont have enough product.\nReturning to menu...");
-        break;
+        puts("Specify amount you want to withdraw.");
+        amount = scanInt();
+        if (amount <= it->QUANTITY) {
+          it->QUANTITY -= amount;
+        } else {
+          puts("You dont have enough product.\nReturning to menu...");
+          break;
+        }
+        sql_updateItem(db, it);
+        printf("New balance: %d", it->QUANTITY);
       }
-      sql_updateItem(db, it);
-      printf("New balance: %d", it->QUANTITY);
       free_item(it);
+      free(itemsName);
       break;
     default:
       puts("You didnt specify an option. Returning to menu...");
@@ -152,7 +159,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     sql_showAllItemsOfClient(db, *cl);
     system("pause");
     break;
-  default: //exit
+  case 'x': //exit
     exit = 1;
     break;
   }

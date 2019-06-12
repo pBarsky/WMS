@@ -1,6 +1,6 @@
 #include "../include/items.h"
 
-Item *create_item(Client *cl, int *IDs) {
+Item *create_item(Client *cl, int *IDs, char* input) {
   char *tmp = NULL;
   Item *item = malloc(sizeof(Item)); // memory for client
   if (item != NULL) {
@@ -9,17 +9,27 @@ Item *create_item(Client *cl, int *IDs) {
     perror("AN ERROR OCCURRED");
     exit(-1);
   }
-
-  puts("Enter item name: ");
-  tmp = scanString();
-  item->NAME = malloc(strlen(tmp) + 1); // memory for clients name
-  if (item->NAME != NULL) {
-    strcpy_s(item->NAME, strlen(tmp) + 1, tmp);
+  if (input != NULL) {
+    item->NAME = malloc(strlen(input) + 1);
+    if (item->NAME != NULL) {
+      strcpy_s(item->NAME, strlen(input) + 1, input);
+    } else {
+      perror("AN ERROR OCCURRED");
+      exit(-1);
+    }
   } else {
-    perror("AN ERROR OCCURRED");
-    exit(-1);
+
+    puts("Enter item name: ");
+    tmp = scanString();
+    item->NAME = malloc(strlen(tmp) + 1); // memory for clients name
+    if (item->NAME != NULL) {
+      strcpy_s(item->NAME, strlen(tmp) + 1, tmp);
+    } else {
+      perror("AN ERROR OCCURRED");
+      exit(-1);
+    }
+    free(tmp);
   }
-  free(tmp);
   puts("Enter item quantity: ");
   item->QUANTITY = scanInt();
   item->CLIENT_ID = cl->ID;
@@ -31,6 +41,8 @@ Item *create_item_fromDB(sqlite3 *db, Client *cl, char *name) {
   char *sql = NULL;
   Item *it = malloc(sizeof(Item));
   sql = malloc(strlen(SEARCHITEM) + strlen(name) + intLen(cl->ID) + 1);
+  if (it != NULL)
+    it->ID = -1;
   if (sql != NULL) {
     snprintf(sql, strlen(sql), "SELECT * FROM ITEMS WHERE NAME LIKE '%s' AND CLIENT_ID=%d;", name, cl->ID);
   } else {
@@ -56,7 +68,7 @@ int item_creation_callback(Item *it, int argc, char **argv, char **azColName) {
 }
 
 void free_item(Item *item) {
-  if (item->NAME != NULL) {
+  if (item->NAME != NULL && item->ID != -1) {
     free(item->NAME);
   }
   free(item);
