@@ -22,3 +22,4 @@ Item *create_item_fromDB(sqlite3 *, Client* cl, char*);
 int item_creation_callback(Item *, int, char **, char **);
 
 void free_item(Item *item);
+void free_ItemList(ItemList *items);

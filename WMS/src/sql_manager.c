@@ -15,16 +15,36 @@ int default_callback(void *data, int argc, char **argv, char **azColName) {
   printf("\n\n");
   return 0;
 }
-void item_list_callback(ItemList *data, int argc, char **argv, char **azColname) {
+
+int item_list_callback(ItemList *data, int argc, char **argv, char **azColname) {
+  int i;
   Item *it = malloc(sizeof(Item));
+  Item **oldList;
+  if (it == NULL) {
+    perror("AN ERROR OCCURED");
+    exit(-1);
+  }
   it->ID = stringToInt(argv[0]);
   it->NAME = malloc(strlen(argv[1]) + 1);
-  strcpy_s(it->NAME, strlen(argv[1]), argv[1]);
+  if (it->NAME == NULL) {
+    perror("AN ERROR OCCURED");
+    exit(-1);
+  }
+  strcpy_s(it->NAME, strlen(argv[1]) + 1, argv[1]);
   it->QUANTITY = stringToInt(argv[2]);
   it->CLIENT_ID = stringToInt(argv[3]);
   data->size++;
-  data->list = malloc(data->size + sizeof(Item));
+  oldList = data->list;
+  data->list = realloc(data->list, data->size + sizeof(Item));
+  if (data->list == NULL) {
+    for (i = 0; i < data->size - 1; i++) {
+      free_item(oldList[i]);
+    }
+    perror("AN ERROR OCCURED");
+    exit(-1);
+  }
   data->list[data->size - 1] = it;
+  return 0;
 }
 
 int item_callback(void *data, int argc, char **argv, char **azColName) {
@@ -194,7 +214,7 @@ void sql_showAllItemsOfClient(sqlite3 *db, Client *cl, ItemList *items) {
     perror("AN ERROR OCCURRED");
     exit(-1);
   }
-  sqlite3_exec(db, sql, item_list_callback, &items, &zErrMsg);
+  sqlite3_exec(db, sql, item_list_callback, items, &zErrMsg);
   if (zErrMsg) {
     puts(zErrMsg);
   }

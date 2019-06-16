@@ -49,20 +49,25 @@ void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
       exit(0);
     }
     break;
-  case 'e':
+  default:
     exit(0);
   }
 }
 
 int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   char choice;
-  int exit = 0;
+  int finished = 0;
   ItemList *items = malloc(sizeof(ItemList));
+  if (items == NULL) {
+    perror("AN ERROR OCCURRED");
+    exit(-1);
+  }
   items->list = NULL;
   items->size = 0;
   Item *it = NULL;
   char *itemsName;
   int amount = 0;
+  int i = 0;
   choice = _getch();
 
   switch (choice) {
@@ -71,7 +76,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     sql_removeAllItems(db, *cl);
     sql_removeClient(db, *cl);
     puts("Data removed. Exiting...");
-    exit = 1;
+    finished = 1;
     system("pause");
     break;
   case 'w': //list all clients
@@ -160,11 +165,14 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   case 'z': //list all items
     system("cls");
     sql_showAllItemsOfClient(db, *cl, items);
+	for (i = 0; i < items->size; i++) {
+      printf("Name: %s\tQuantity: %d\n", items->list[i]->NAME, items->list[i]->QUANTITY);
+	}
     system("pause");
     break;
   case 'x': //exit
-    exit = 1;
+    finished = 1;
     break;
   }
-  return exit;
+  return finished;
 }

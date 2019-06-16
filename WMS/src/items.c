@@ -2,7 +2,7 @@
 
 Item *create_item(Client *cl, int *IDs, char* input) {
   char *tmp = NULL;
-  Item *item = malloc(sizeof(Item)); // memory for client
+  Item *item = malloc(sizeof(Item)); // memory for item
   if (item != NULL) {
     item->ID = IDs[1]++;
   } else {
@@ -21,7 +21,7 @@ Item *create_item(Client *cl, int *IDs, char* input) {
 
     puts("Enter item name: ");
     tmp = scanString();
-    item->NAME = malloc(strlen(tmp) + 1); // memory for clients name
+    item->NAME = malloc(strlen(tmp) + 1); // memory for items name
     if (item->NAME != NULL) {
       strcpy_s(item->NAME, strlen(tmp) + 1, tmp);
     } else {
@@ -72,4 +72,12 @@ void free_item(Item *item) {
     free(item->NAME);
   }
   free(item);
+}
+
+void free_ItemList(ItemList* items) {
+  int i;
+  for (i = 0; i < items->size; i++) {
+    free_item(items->list[i]);
+  }
+  free(items);
 }

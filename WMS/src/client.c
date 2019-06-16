@@ -2,7 +2,7 @@
 
 Client *create_client(int *IDs) {
   char *tmp = NULL;
-  char *hexDump= malloc(41);
+  char *hexDump = malloc(41);
   char *binDump = malloc(21);
   Client *cl = malloc(sizeof(Client)); // memory for client
   int success = 0;
