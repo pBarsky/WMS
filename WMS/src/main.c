@@ -1,7 +1,7 @@
 #include "../include/menu.h"
 int main(int argc, char* argv[]) {
   sqlite3* db;
-  Client* cl = malloc(sizeof(Client*));
+  Client* cl = malloc(sizeof(Client));
   char* zErrMsg = 0;
   int rc;
   int lastIDs[2] = {0};

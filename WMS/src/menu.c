@@ -4,7 +4,7 @@ void drawEntryMenu() {
   const char *strings[] = {
       "q) Create a new client.",
       "w) Use an existing client.",
-      "e) Exit."};
+      "Any other key to exit Exit."};
   system("cls");
   WHITEBACKGROUND();
   for (i = 0; i < (sizeof(strings) / sizeof(strings[0])); i++) {
@@ -30,7 +30,6 @@ void drawMenu() {
   }
   WHITETEXT();
 }
-
 void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
   char choice;
   choice = _getch();
@@ -53,7 +52,6 @@ void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
     exit(0);
   }
 }
-
 int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   char choice;
   int finished = 0;
@@ -165,9 +163,8 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   case 'z': //list all items
     system("cls");
     sql_showAllItemsOfClient(db, *cl, items);
-	for (i = 0; i < items->size; i++) {
-      printf("Name: %s\tQuantity: %d\n", items->list[i]->NAME, items->list[i]->QUANTITY);
-	}
+    scrollItems(items);
+    free_ItemList(items);
     system("pause");
     break;
   case 'x': //exit
@@ -175,4 +172,35 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     break;
   }
   return finished;
+}
+void scrollItems(ItemList *items) {
+  int i, offset = 0;
+  char dir = '\0';
+  for (i = offset; i < offset + 20 && i < items->size; i++) {
+    printf("%d. NAME: %15s\tQUANTITY: %3d\n", i, items->list[i]->NAME, items->list[i]->QUANTITY);
+  }
+  puts("W to go up by 20 places, S to go down, X to exit");
+  while (dir != 'x') {
+    dir = _getch();
+    switch (dir) {
+    case 's':
+      system("cls");
+      offset = offset + 20 < items->size ? offset + 20 : offset;
+      for (i = offset; i < offset + 20 && i < items->size; i++) {
+        printf("%d. NAME: %15s\tQUANTITY: %3d\n", i, items->list[i]->NAME, items->list[i]->QUANTITY);
+      }
+      puts("W to go up by 20 places, S to go down, X to exit");
+      break;
+    case 'w':
+      system("cls");
+      offset = offset - 20 > 0 ? offset - 20 : 0;
+      for (i = offset; i < offset + 20 && i < items->size; i++) {
+        printf("%d. NAME: %15s\tQUANTITY: %3d\n", i, items->list[i]->NAME, items->list[i]->QUANTITY);
+      }
+      puts("W to go up by 20 places, S to go down, X to exit");
+      break;
+    default:
+      break;
+    }
+  }
 }

@@ -35,7 +35,7 @@ int item_list_callback(ItemList *data, int argc, char **argv, char **azColname) 
   it->CLIENT_ID = stringToInt(argv[3]);
   data->size++;
   oldList = data->list;
-  data->list = realloc(data->list, data->size + sizeof(Item));
+  data->list = realloc(data->list, data->size * sizeof(Item));
   if (data->list == NULL) {
     for (i = 0; i < data->size - 1; i++) {
       free_item(oldList[i]);
