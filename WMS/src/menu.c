@@ -4,7 +4,7 @@ void drawEntryMenu() {
   const char *strings[] = {
       "q) Create a new client.",
       "w) Use an existing client.",
-      "e) Exit."};
+      "Any other key to exit Exit."};
   system("cls");
   WHITEBACKGROUND();
   for (i = 0; i < (sizeof(strings) / sizeof(strings[0])); i++) {
@@ -30,7 +30,6 @@ void drawMenu() {
   }
   WHITETEXT();
 }
-
 void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
   char choice;
   choice = _getch();
@@ -43,26 +42,30 @@ void getChoiceEntry(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'w':
     *cl = create_client_fromDB(db);
-    if (*cl == NULL || (*cl)->NAME == NULL || (*cl)->SURNAME == NULL) {
+    if (*cl == NULL || (*cl)->NAME == NULL) {
       puts("No client found.");
       system("pause");
       exit(0);
     }
     break;
-  case 'e':
-    exit(0);
   default:
     exit(0);
-    break;
   }
 }
-
 int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   char choice;
-  int exit = 0;
+  int finished = 0;
+  ItemList *items = malloc(sizeof(ItemList));
+  if (items == NULL) {
+    perror("AN ERROR OCCURRED");
+    exit(-1);
+  }
+  items->list = NULL;
+  items->size = 0;
   Item *it = NULL;
   char *itemsName;
   int amount = 0;
+  int i = 0;
   choice = _getch();
 
   switch (choice) {
@@ -71,7 +74,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     sql_removeAllItems(db, *cl);
     sql_removeClient(db, *cl);
     puts("Data removed. Exiting...");
-    exit = 1;
+    finished = 1;
     system("pause");
     break;
   case 'w': //list all clients
@@ -82,14 +85,14 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'e': //add new item
     system("cls");
-    it = create_item(*cl, IDs);
+    it = create_item(*cl, IDs, NULL);
     sql_addItem(db, it, *cl);
     free_item(it);
     system("pause");
     break;
   case 'a': //remove item
     system("cls");
-    sql_showAllItemsOfClient(db, *cl);
+    sql_showAllItemsOfClient(db, *cl, items);
     puts("Please enter items name.: ");
     itemsName = scanString();
     sql_removeItem(db, itemsName, *cl);
@@ -99,7 +102,7 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
   case 's': //update item
     system("cls");
     choice = 0;
-    sql_showAllItemsOfClient(db, *cl);
+    sql_showAllItemsOfClient(db, *cl, items);
     puts("Do you want to:");
     puts("q) Deposit items.");
     puts("w) Withdraw items.");
@@ -109,30 +112,40 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
       puts("Specify name of the item.");
       itemsName = scanString();
       it = create_item_fromDB(db, *cl, itemsName);
+      if (it->ID == -1) {
+        puts("Item not found in inventory. New item will be created");
+        it = create_item(*cl, IDs, itemsName);
+        sql_addItem(db, it, *cl);
+      } else {
+        puts("Specify amount you want to deposit.");
+        amount = scanInt();
+        it->QUANTITY += amount;
+        sql_updateItem(db, it);
+        printf("New balance: %d\n", it->QUANTITY);
+      }
       free(itemsName);
-      puts("Specify amount you want to deposit.");
-      amount = scanInt();
-      it->QUANTITY += amount;
-      sql_updateItem(db, it);
-      printf("New balance: %d", it->QUANTITY);
       free_item(it);
       break;
     case 'w':
       puts("Specify name of the item.");
       itemsName = scanString();
       it = create_item_fromDB(db, *cl, itemsName);
-      free(itemsName);
-      puts("Specify amount you want to withdraw.");
-      amount = scanInt();
-      if (amount <= it->QUANTITY) {
-        it->QUANTITY -= amount;
+      if (it->ID == -1) {
+        puts("Item not found in inventory.");
       } else {
-        puts("You dont have enough product.\nReturning to menu...");
-        break;
+        puts("Specify amount you want to withdraw.");
+        amount = scanInt();
+        if (amount <= it->QUANTITY) {
+          it->QUANTITY -= amount;
+        } else {
+          puts("You dont have enough product.\nReturning to menu...");
+          break;
+        }
+        sql_updateItem(db, it);
+        printf("New balance: %d", it->QUANTITY);
       }
-      sql_updateItem(db, it);
-      printf("New balance: %d", it->QUANTITY);
       free_item(it);
+      free(itemsName);
       break;
     default:
       puts("You didnt specify an option. Returning to menu...");
@@ -149,12 +162,45 @@ int getChoice(sqlite3 *db, Client **cl, int *IDs) {
     break;
   case 'z': //list all items
     system("cls");
-    sql_showAllItemsOfClient(db, *cl);
+    sql_showAllItemsOfClient(db, *cl, items);
+    scrollItems(items);
+    free_ItemList(items);
     system("pause");
     break;
-  default: //exit
-    exit = 1;
+  case 'x': //exit
+    finished = 1;
     break;
   }
-  return exit;
+  return finished;
+}
+void scrollItems(ItemList *items) {
+  int i, offset = 0;
+  char dir = '\0';
+  for (i = offset; i < offset + 20 && i < items->size; i++) {
+    printf("%d. NAME: %15s\tQUANTITY: %3d\n", i, items->list[i]->NAME, items->list[i]->QUANTITY);
+  }
+  puts("W to go up by 20 places, S to go down, X to exit");
+  while (dir != 'x') {
+    dir = _getch();
+    switch (dir) {
+    case 's':
+      system("cls");
+      offset = offset + 20 < items->size ? offset + 20 : offset;
+      for (i = offset; i < offset + 20 && i < items->size; i++) {
+        printf("%d. NAME: %15s\tQUANTITY: %3d\n", i, items->list[i]->NAME, items->list[i]->QUANTITY);
+      }
+      puts("W to go up by 20 places, S to go down, X to exit");
+      break;
+    case 'w':
+      system("cls");
+      offset = offset - 20 > 0 ? offset - 20 : 0;
+      for (i = offset; i < offset + 20 && i < items->size; i++) {
+        printf("%d. NAME: %15s\tQUANTITY: %3d\n", i, items->list[i]->NAME, items->list[i]->QUANTITY);
+      }
+      puts("W to go up by 20 places, S to go down, X to exit");
+      break;
+    default:
+      break;
+    }
+  }
 }

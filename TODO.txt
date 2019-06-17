@@ -1,0 +1,7 @@
+-miejsce na hash w tabeli z klientem
+
+
+-tworzenie hasha przy tworzeniu klienta
+
+
+-sprawdzenie hasha przy logowaniu

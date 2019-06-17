@@ -16,10 +16,38 @@ int default_callback(void *data, int argc, char **argv, char **azColName) {
   return 0;
 }
 
+int item_list_callback(ItemList *data, int argc, char **argv, char **azColname) {
+  int i;
+  Item *it = malloc(sizeof(Item));
+  Item **oldList;
+  if (it == NULL) {
+    perror("AN ERROR OCCURED");
+    exit(-1);
+  }
+  it->ID = stringToInt(argv[0]);
+  it->NAME = malloc(strlen(argv[1]) + 1);
+  if (it->NAME == NULL) {
+    perror("AN ERROR OCCURED");
+    exit(-1);
+  }
+  strcpy_s(it->NAME, strlen(argv[1]) + 1, argv[1]);
+  it->QUANTITY = stringToInt(argv[2]);
+  it->CLIENT_ID = stringToInt(argv[3]);
+  data->size++;
+  oldList = data->list;
+  data->list = realloc(data->list, data->size * sizeof(Item));
+  if (data->list == NULL) {
+    for (i = 0; i < data->size - 1; i++) {
+      free_item(oldList[i]);
+    }
+    perror("AN ERROR OCCURED");
+    exit(-1);
+  }
+  data->list[data->size - 1] = it;
+  return 0;
+}
+
 int item_callback(void *data, int argc, char **argv, char **azColName) {
-    //kopiowanie wszystkich danych do tablicy, zeby mozna bylo przewijac interfejs
-    //i przekazywanie przez referencje w mainie zamiast **
-    //no i te hasla
   printf("|| %10s = %12s|| \n", azColName[1], argv[1] ? argv[1] : "NULL");
   printf("|| %10s = %12s|| \n", azColName[2], argv[2] ? argv[2] : "NULL");
   printf("\n\n");
@@ -27,7 +55,7 @@ int item_callback(void *data, int argc, char **argv, char **azColName) {
 }
 
 int client_callback(void *data, int argc, char **argv, char **azColName) {
-  printf("||ID: %4s\tName: %12s\tSurname: %12s||\n", argv[0], argv[1], argv[2]);
+  printf("||ID: %4s\tName: %12s||\n", argv[0], argv[1]);
   return 0;
 }
 
@@ -38,12 +66,12 @@ int fetchIDs(int *data, int argc, char **argv, char **azColName) {
 }
 
 void sql_addClient(sqlite3 *db, Client *cl) {
-  char *sql = malloc(strlen(INSERTCLIENT) + strlen(cl->NAME) + strlen(cl->SURNAME) + intLen(cl->ID) + 1);
+  char *sql = malloc(strlen(INSERTCLIENT) + strlen(cl->NAME) + intLen(cl->PASSWD) + intLen(cl->ID) + 1);
   char *zErrMsg;
   if (sql != NULL) {
     snprintf(
         sql, strlen(sql),
-        "INSERT INTO CLIENTS (ID, NAME, SURNAME) VALUES(%d, \'%s\', \'%s\');", cl->ID, cl->NAME, cl->SURNAME);
+        "INSERT INTO CLIENTS (ID, NAME, PASSWD) VALUES(%d, \'%s\', %d);", cl->ID, cl->NAME, cl->PASSWD);
   } else {
     perror("AN ERROR OCCURRED");
     exit(-1);
@@ -72,46 +100,6 @@ void sql_removeClient(sqlite3 *db, Client *cl) {
   sqlite3_free(zErrMsg);
   free(sql);
 }
-
-// void sql_updateClient(sqlite3* db, Client* cl) {
-//  char* sql = malloc(strlen(UPDATECLIENT) + intLen(cl->ID) + 1);
-//  char *zErrMsg, *newName, *newSurname;
-//  puts("Please enter new name for the client.");
-//  newName = scanString();
-//  puts("Please enter new surname for the client");
-//  newSurname = scanString();
-//
-//  if (sql != NULL) {
-//    snprintf(sql, strlen(sql),
-//             "UPDATE CLIENTS SET NAME='%s', SURNAME='%s' WHERE ID=%d;", newName, newSurname, cl->ID);
-//  } else {
-//    perror("AN ERROR OCCURRED");
-//    exit(-1);
-//  }
-//  sqlite3_exec(db, sql, NULL, 0, &zErrMsg);
-//  if (zErrMsg) {
-//    puts(zErrMsg);
-//  }
-//  sqlite3_free(zErrMsg);
-//  free(sql);
-//}
-
-//void sql_showClient(sqlite3 *db, Client *cl) {
-//  char *sql = malloc(strlen(SHOWCLIENT) + intLen(cl->ID) + 1);
-//  char *zErrMsg;
-//  if (sql != NULL) {
-//    snprintf(sql, strlen(sql), "SELECT * FROM CLIENTS WHERE ID=%d;", cl->ID);
-//  } else {
-//    perror("AN ERROR OCCURRED");
-//    exit(-1);
-//  }
-//  sqlite3_exec(db, sql, client_callback, 0, &zErrMsg);
-//  if (zErrMsg) {
-//    puts(zErrMsg);
-//  }
-//  sqlite3_free(zErrMsg);
-//  free(sql);
-//}
 
 void sql_showAllClients(sqlite3 *db) {
   char *zErrMsg;
@@ -169,8 +157,8 @@ void sql_updateItem(sqlite3 *db, Item *it) {
   if (zErrMsg) {
     puts(zErrMsg);
   }
-  sqlite3_free(zErrMsg);
   free(sql);
+  sqlite3_free(zErrMsg);
 }
 
 void sql_removeAllItems(sqlite3 *db, Client *cl) {
@@ -217,17 +205,7 @@ void sql_setLastIDs(sqlite3 *db, int *IDs) {
   sqlite3_free(zErrMsg);
 }
 
-//void sql_showAllItems(sqlite3 *db) {
-//  char *zErrMsg;
-//  int success = 0;
-//  sqlite3_exec(db, SHOWALLCLIENTS, default_callback, 0, &zErrMsg);
-//  if (zErrMsg) {
-//    puts(zErrMsg);
-//  }
-//  sqlite3_free(zErrMsg);
-//}
-
-void sql_showAllItemsOfClient(sqlite3 *db, Client *cl) {
+void sql_showAllItemsOfClient(sqlite3 *db, Client *cl, ItemList *items) {
   char *sql = malloc(strlen(SHOWALLITEMSOFCLIENT) + intLen(cl->ID) + 1);
   char *zErrMsg;
   if (sql != NULL) {
@@ -236,7 +214,7 @@ void sql_showAllItemsOfClient(sqlite3 *db, Client *cl) {
     perror("AN ERROR OCCURRED");
     exit(-1);
   }
-  sqlite3_exec(db, sql, item_callback, 0, &zErrMsg);
+  sqlite3_exec(db, sql, item_list_callback, items, &zErrMsg);
   if (zErrMsg) {
     puts(zErrMsg);
   }

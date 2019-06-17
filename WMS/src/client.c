@@ -2,6 +2,8 @@
 
 Client *create_client(int *IDs) {
   char *tmp = NULL;
+  char *hexDump = malloc(41);
+  char *binDump = malloc(21);
   Client *cl = malloc(sizeof(Client)); // memory for client
   int success = 0;
   if (cl != NULL) {
@@ -16,15 +18,9 @@ Client *create_client(int *IDs) {
       exit(-1);
     }
     free(tmp);
-    puts("Enter surname: ");
+    puts("Enter password: ");
     tmp = scanString();
-    cl->SURNAME = malloc(strlen(tmp) + 1);
-    if (cl->SURNAME != NULL) {
-      strcpy_s(cl->SURNAME, strlen(tmp) + 1, tmp);
-    } else {
-      perror("AN ERROR OCCURRED");
-      exit(-1);
-    }
+    cl->PASSWD = hashPassword(tmp);
     free(tmp);
   } else {
     perror("AN ERROR OCCURED");
@@ -35,20 +31,27 @@ Client *create_client(int *IDs) {
 
 Client *create_client_fromDB(sqlite3 *db) {
   char *name = NULL;
-  char *surname = NULL;
+  char *password = NULL;
   char *zErrMsg = NULL;
   char *sql = NULL;
+  int hash = 0;
   Client *cl = malloc(sizeof(Client));
-  cl->NAME = NULL;
-  cl->SURNAME = NULL;
+  if (cl != NULL) {
+    cl->NAME = NULL;
+  } else {
+    perror("AN ERROR OCCURRED");
+    exit(-1);
+  }
 
-  puts("Please input your name: ");
+  puts("Please input your login: ");
   name = scanString();
-  puts("Please input your surname: ");
-  surname = scanString();
-  sql = malloc(strlen(SEARCHCLIENT) + strlen(name) + strlen(surname) + 1);
+  puts("Please input your password: ");
+  password = scanString();
+  hash = hashPassword(password);
+  free(password);
+  sql = malloc(strlen(SEARCHCLIENT) + strlen(name) + intLen(hash) + 1);
   if (sql != NULL) {
-    snprintf(sql, strlen(sql), "SELECT * FROM CLIENTS WHERE NAME LIKE '%s' AND SURNAME LIKE '%s';", name, surname);
+    snprintf(sql, strlen(sql), "SELECT * FROM CLIENTS WHERE NAME='%s' AND PASSWD=%d;", name, hash);
   } else {
     perror("AN ERROR OCCURED");
     exit(-1);
@@ -66,23 +69,13 @@ int client_creation_callback(Client *cl, int argc, char **argv, char **azColName
     perror("AN ERROR OCCURRED");
     exit(-1);
   }
-  cl->SURNAME = malloc(strlen(argv[2]) + 1);
-  if (cl->SURNAME != NULL) {
-    strcpy_s(cl->SURNAME, strlen(argv[2]) + 1, argv[2]);
-  } else {
-    perror("AN ERROR OCCURRED");
-    exit(-1);
-  }
-
+  cl->PASSWD = stringToInt(argv[2]);
   return 0;
 }
 
 void free_client(Client *client) {
   if (client->NAME != NULL) {
     free(client->NAME);
-  }
-  if (client->SURNAME != NULL) {
-    free(client->SURNAME);
   }
   free(client);
 }

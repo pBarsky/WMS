@@ -5,12 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define SEARCHCLIENT "SELECT * FROM CLIENTS WHERE NAME LIKE '' AND SURNAME LIKE '';"
+#define SEARCHCLIENT "SELECT NAME FROM CLIENTS WHERE NAME LIKE '';"
 
 typedef struct client {
   int ID;
   char *NAME;
-  char *SURNAME;
+  int PASSWD;
 } Client;
 
 Client *create_client(int *);
