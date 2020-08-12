@@ -13,6 +13,6 @@
 
 void drawMenu();
 void drawEntryMenu();
-void scrollItems(ItemList *items);
-int getChoice(sqlite3 *, Client **, int *IDs);
-void getChoiceEntry(sqlite3*, Client**, int* IDs);
+void scroll_items(ItemList* items);
+int getChoice(sqlite3*, client**, int* IDs);
+void getChoiceEntry(sqlite3*, client**, int* i_ds);

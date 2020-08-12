@@ -7,13 +7,14 @@
 #include <string.h>
 #define SEARCHCLIENT "SELECT NAME FROM CLIENTS WHERE NAME LIKE '';"
 
-typedef struct client {
-  int ID;
-  char *NAME;
-  int PASSWD;
-} Client;
+typedef struct client1
+{
+	int ID;
+	char* NAME;
+	int PASSWD;
+} client;
 
-Client *create_client(int *);
-Client *create_client_fromDB(sqlite3 *db);
-int client_creation_callback(Client *, int, char **, char **);
-void free_client(Client *);
+client* create_client(int*);
+client* create_client_from_db(sqlite3* db);
+int client_creation_callback(client*, int, char**, char**);
+void free_client(client*);
