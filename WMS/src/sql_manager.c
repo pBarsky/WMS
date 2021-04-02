@@ -81,9 +81,8 @@ void sql_add_client(sqlite3* db, client* cl)
 	char* z_err_msg;
 	if (sql != NULL)
 	{
-		snprintf(
-			sql, strlen(sql),
-			"INSERT INTO CLIENTS (ID, NAME, PASSWD) VALUES(%d, \'%s\', %d);", cl->id, cl->name, cl->passwd);
+		snprintf(sql, strlen(sql), "INSERT INTO CLIENTS (ID, NAME, PASSWD) VALUES(%d, \'%s\', %d);", cl->id, cl->name,
+			cl->passwd);
 	}
 	else
 	{
