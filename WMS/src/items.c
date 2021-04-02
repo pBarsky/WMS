@@ -1,107 +1,118 @@
 #include "../include/items.h"
 
-Item* create_item(client* cl, int* IDs, char* input)
+item_list* new_item_list()
 {
-	char* tmp = NULL;
-	Item* item = malloc(sizeof(Item)); // memory for item
-	if (item != NULL)
-	{
-		item->ID = IDs[1]++;
-	}
-	else
+	item_list* items = malloc(sizeof(item_list));
+	if (items == NULL)
 	{
 		perror("AN ERROR OCCURRED");
 		exit(-1);
 	}
-	if (input != NULL)
-	{
-		item->NAME = malloc(strlen(input) + 1);
-		if (item->NAME != NULL)
-		{
-			strcpy_s(item->NAME, strlen(input) + 1, input);
-		}
-		else
-		{
-			perror("AN ERROR OCCURRED");
-			exit(-1);
-		}
-	}
-	else
-	{
-		puts("Enter item name: ");
-		tmp = scan_string();
-		item->NAME = malloc(strlen(tmp) + 1); // memory for items name
-		if (item->NAME != NULL)
-		{
-			strcpy_s(item->NAME, strlen(tmp) + 1, tmp);
-		}
-		else
-		{
-			perror("AN ERROR OCCURRED");
-			exit(-1);
-		}
-		free(tmp);
-	}
-	puts("Enter item quantity: ");
-	item->QUANTITY = scan_int();
-	item->CLIENT_ID = cl->ID;
-	return item;
+	items->list = NULL;
+	items->size = 0;
+	return items;
 }
 
-Item* create_item_fromDB(sqlite3* db, client* cl, char* name)
+item* create_item(client* cl, int* ids, char* input)
 {
-	char* zErrMsg = NULL;
-	char* sql = NULL;
-	Item* it = malloc(sizeof(Item));
-	sql = malloc(strlen(SEARCHITEM) + strlen(name) + int_len(cl->ID) + 1);
-	if (it != NULL)
-		it->ID = -1;
-	if (sql != NULL)
+	item* it = malloc(sizeof(item));
+	if (it == NULL)
 	{
-		snprintf(sql, strlen(sql), "SELECT * FROM ITEMS WHERE NAME LIKE '%s' AND CLIENT_ID=%d;", name, cl->ID);
+		perror("AN ERROR OCCURRED");
+		exit(-1);
 	}
-	else
+	it->id = ids[1]++;
+	handle_create_item_input(input, it);
+	puts("Enter item quantity: ");
+	it->quantity = scan_int();
+	it->client_id = cl->id;
+	return it;
+}
+
+void handle_create_item_input(const char* input, item* item)
+{
+	if (input != NULL)
+	{
+		create_item_from_input(input, item);
+		return;
+	}
+	create_item_manually(item);
+}
+
+void create_item_from_input(const char* input, item* item)
+{
+	item->name = malloc(strlen(input) + 1);
+	if (item->name == NULL)
+	{
+		perror("AN ERROR OCCURRED");
+		exit(-1);
+	}
+	strcpy_s(item->name, strlen(input) + 1, input);
+}
+
+void create_item_manually(item* item)
+{
+	puts("Enter item name: ");
+	char* tmp = scan_string();
+	item->name = malloc(strlen(tmp) + 1);
+	if (item->name == NULL)
+	{
+		perror("AN ERROR OCCURRED");
+		exit(-1);
+	}
+	strcpy_s(item->name, strlen(tmp) + 1, tmp);
+	free(tmp);
+}
+
+item* create_item_from_db(sqlite3* db, client* cl, char* name)
+{
+	char* z_err_msg = NULL;
+	item* it = malloc(sizeof(item));
+	char* sql = malloc(strlen(SEARCHITEM) + strlen(name) + int_len(cl->id) + 1);
+	if (sql == NULL)
 	{
 		perror("AN ERROR OCCURED");
 		exit(-1);
 	}
-	sqlite3_exec(db, sql, item_creation_callback, it, &zErrMsg);
+	if (it != NULL)
+	{
+		it->id = -1;
+	}
+	snprintf(sql, strlen(sql), "SELECT * FROM ITEMS WHERE NAME LIKE '%s' AND CLIENT_ID=%d;", name, cl->id);
+	sqlite3_exec(db, sql, item_creation_callback, it, &z_err_msg);
 	return it;
 }
 
-int item_creation_callback(Item* it, int argc, char** argv, char** azColName)
+int item_creation_callback(item* it, int argc, char** argv, char** az_col_name)
 {
-	it->ID = string_to_int(argv[0]);
-	it->NAME = malloc(strlen(argv[1]) + 1);
-	if (it->NAME != NULL)
-	{
-		strcpy_s(it->NAME, strlen(argv[1]) + 1, argv[1]);
-	}
-	else
+	it->id = string_to_int(argv[0]);
+	it->name = malloc(strlen(argv[1]) + 1);
+	if (it->name == NULL)
 	{
 		perror("AN ERROR OCCURRED");
 		exit(-1);
 	}
-	it->QUANTITY = string_to_int(argv[2]);
-	it->CLIENT_ID = string_to_int(argv[3]);
+	strcpy_s(it->name, strlen(argv[1]) + 1, argv[1]);
+	it->quantity = string_to_int(argv[2]);
+	it->client_id = string_to_int(argv[3]);
 	return 0;
 }
 
-void free_item(Item* item)
+void free_item(item* item)
 {
-	if (item->NAME != NULL && item->ID != -1)
+	if (item->name != NULL && item->id != -1)
 	{
-		free(item->NAME);
+		free(item->name);
 	}
 	free(item);
 }
 
-void free_ItemList(ItemList* items)
+void free_item_list(item_list* items)
 {
-	int i;
-	for (i = 0; i < items->size; i++)
+	for (int i = 0; i < items->size; i++)
 	{
-		free_item(items->list[i]);
+		item** item = &items->list[i];
+		free_item(*item);
 	}
 	free(items);
 }

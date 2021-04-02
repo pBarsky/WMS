@@ -35,21 +35,21 @@
 
 int default_callback(void*, int, char**, char**);
 int item_callback(void*, int, char**, char**);
-int item_list_callback(ItemList*, int, char**, char**);
+int item_list_callback(item_list*, int, char**, char**);
 int client_callback(void*, int, char**, char**);
-int fetchIDs(int*, int, char**, char**);
+int fetch_ids(int*, int, char**, char**);
 
 void sql_init(sqlite3*);
-void sql_addClient(sqlite3*, client*);
-void sql_removeClient(sqlite3*, client*);
-void sql_showAllClients(sqlite3*);
+void sql_add_client(sqlite3*, client*);
+void sql_remove_client(sqlite3*, client*);
+void sql_show_all_clients(sqlite3*);
 
-void sql_addItem(sqlite3*, Item*, client*);
-void sql_removeItem(sqlite3*, char*, client*);
-void sql_removeAllItems(sqlite3*, client*);
-void sql_updateItem(sqlite3*, Item*);
-void sql_showAllItemsOfClient(sqlite3*, client*, ItemList*);
-void sql_dump_lastIDs(sqlite3*, int*);
-void sql_showItem(sqlite3*, client*, char*);
+void sql_add_item(sqlite3*, item*, client*);
+void sql_remove_item(sqlite3*, char*, client*);
+void sql_remove_all_items(sqlite3*, client*);
+void sql_update_item(sqlite3*, item*);
+void sql_show_all_items_of_client(sqlite3*, client*, item_list*);
+void sql_dump_last_ids(sqlite3*, int*);
+void sql_show_item(sqlite3*, client*, char*);
 
-void sql_setLastIDs(sqlite3* db, int*);
+void sql_set_last_ids(sqlite3* db, int*);

@@ -4,26 +4,25 @@ int main(int argc, char* argv[])
 {
 	sqlite3* db;
 	client* cl = malloc(sizeof(client));
-	char* zErrMsg = 0;
-	int rc;
-	int lastIDs[2] = { 0 };
-	char finished = 0;
+	int last_ids[2] = { 0 };
+	char finished;
+	const int rc = sqlite3_open("test.db", &db);
 
-	rc = sqlite3_open("test.db", &db);
 	if (rc)
 	{
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		return 0;
 	}
+
 	fprintf(stderr, "Opened database successfully\n");
 	sql_init(db);
-	sql_setLastIDs(db, lastIDs);
-	drawEntryMenu();
-	getChoiceEntry(db, &cl, lastIDs);
+	sql_set_last_ids(db, last_ids);
+	draw_entry_menu();
+	get_choice_entry(db, &cl, last_ids);
 	do
 	{
-		drawMenu();
-		finished = getChoice(db, &cl, lastIDs);
+		draw_menu();
+		finished = (char)get_choice(db, &cl, last_ids);
 	} while (finished == 0);
 	if (cl != NULL)
 	{
@@ -34,7 +33,7 @@ int main(int argc, char* argv[])
 		perror("AN ERROR OCCURRED");
 		exit(-1);
 	}
-	sql_dump_lastIDs(db, lastIDs);
+	sql_dump_last_ids(db, last_ids);
 	sqlite3_close(db);
 	system("pause");
 	return 0;
